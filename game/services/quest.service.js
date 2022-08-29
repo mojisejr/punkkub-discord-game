@@ -152,7 +152,11 @@ async function checkDaliyQuest(discordId, inputQuestId) {
   const result = await Promise.all(
     dailyQuests.map(async (questId) => {
       const completed = await getCompletedQuestOf(discordId, questId);
-      if (completed !== undefined && questId == inputQuestId) {
+      if (
+        completed !== undefined &&
+        completed.data != null &&
+        questId == inputQuestId
+      ) {
         return {
           //cannot get quest
           id: questId,

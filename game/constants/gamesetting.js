@@ -9,8 +9,8 @@ module.exports = {
     SuperSpecialRare: "Super Spcecial Rare",
     UltraRare: "Ultra Rare",
   },
-  dailyPveLimit: 5,
-  dailyPvpLimit: 5,
+  dailyPveLimit: 20,
+  dailyPvpLimit: 20,
   daliyQuestsId: [1, 2],
   pveChannelId: "1003238370358595644",
   pvpChannelId: "1013641883639099412",
@@ -31,7 +31,7 @@ module.exports = {
         rate: 150,
       },
     },
-    multiplier: 1,
+    multiplier: 5,
   },
   itemParams: {
     counter: {

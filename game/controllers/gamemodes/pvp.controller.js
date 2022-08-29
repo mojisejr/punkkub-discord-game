@@ -194,6 +194,9 @@ async function pvp1(playerPunk, enemyPunk) {
     if (player.hp <= 0 || enemy.hp <= 0) {
       if (player.hp <= 0) {
         const winImage = await renderWinnerImage(player, enemy, 1);
+        await updatePVPLoseCount(player.discordId);
+        await updatePvpCount(player.discordId);
+        const quest = await updateQuestProgress(player.discordId, 2);
         await updateFightingMessage(
           headerMsg,
           `💪*** ยินดีด้วยจ้าาาา ! ${enemy.tokenId}***💪️`,
@@ -208,12 +211,10 @@ async function pvp1(playerPunk, enemyPunk) {
         );
         await updateFightingMessage(
           gameMsg,
-          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep ..~***`,
+          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep ..~*** 
+          ${quest.msg}`,
           COMMANDS.PVP
         );
-        await updatePVPLoseCount(player.discordId);
-        await updatePvpCount(player.discordId);
-        await updateQuestProgress(player.discordId, 2);
       } else {
         const exp = calculateEXP(counter);
         const winImage = await renderWinnerImage(player, enemy, 0);

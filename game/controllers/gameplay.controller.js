@@ -12,12 +12,16 @@ const { guestPve } = require("./gamemodes/gpve.controller");
 //GAME PLAY MODE CONTROLLER
 
 async function playGame(id, punkkub, message = "", selectedSide = null) {
-  const result = await canPlay(punkkub.discordId);
+  let result = true;
+  if (selectedSide == null) {
+    result = await canPlay(punkkub.discordId);
+    await updateState(punkkub.discordId, true);
+  }
   if (!result) {
     reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
     return;
   }
-  await updateState(punkkub.discordId, true);
+
   //1 switch selected mode by command id then execute PVE, PVP etc. controller !
   switch (id) {
     case COMMANDS.PVE: {

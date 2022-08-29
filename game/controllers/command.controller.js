@@ -98,6 +98,7 @@ async function getQuestHandler(hasPunk, interaction) {
       });
       return;
     }
+    console.log(doneDaliyQuest);
     if (doneDaliyQuest !== undefined && doneDaliyQuest.result) {
       await interaction.editReply({
         content: "👿 Daliy Quest เสร็จไปแล้วนี่ มารับใหม่พรุ่งนี้นะ",
