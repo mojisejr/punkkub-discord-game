@@ -38,6 +38,7 @@ const Collection = {
   FightingLog: db.collection("fightinglogs"),
   Quests: db.collection("quests"),
   Community: db.collection("community"),
+  Guests: db.collection("guests"),
 };
 
 const SubCollection = {

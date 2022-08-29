@@ -1,5 +1,6 @@
 const { Collection, SubCollection } = require("../../database/firestore");
 const { updateExpDiscord } = require("./userInfo.service");
+const gamesetting = require("../constants/gamesetting");
 
 async function getAllQuests() {
   const snapshot = await Collection.Quests.get();
@@ -146,6 +147,24 @@ async function updateQuestProgress(discordId, questId, ...params) {
   }
 }
 
+async function checkDaliyQuest(discordId, inputQuestId) {
+  const dailyQuests = gamesetting.daliyQuestsId;
+  const result = await Promise.all(
+    dailyQuests.map(async (questId) => {
+      const completed = await getCompletedQuestOf(discordId, questId);
+      if (completed !== undefined && questId == inputQuestId) {
+        return {
+          //cannot get quest
+          id: questId,
+          result: true,
+        };
+      }
+    })
+  );
+  const found = result.find((mapped) => mapped !== undefined);
+  return found;
+}
+
 // updateQuestProgress("641295732384464906", 1);
 
 module.exports = {
@@ -160,4 +179,5 @@ module.exports = {
   updateCompletedQuestOf,
   getQuestProgress,
   updateQuestProgress,
+  checkDaliyQuest,
 };

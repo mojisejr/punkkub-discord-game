@@ -9,9 +9,9 @@ const { createBeginStory } = require("../embeds/story.embed");
 const {
   addActiveQuestOf,
   getActiveQuestOf,
-  getCompletedQuestOf,
+  checkDaliyQuest,
 } = require("../services/quest.service");
-const gamesetting = require("../constants/gamesetting");
+const { addGuestPVEPoint } = require("../services/guest.service");
 
 //Punk Game initialization process for verified holder
 async function beginProcessHandler(interaction, profile, punkkub) {
@@ -43,9 +43,8 @@ async function beginProcessHandler(interaction, profile, punkkub) {
 //guestpve interaction handler
 async function guestPveProcessHandler(interaction, punkkub) {
   //point for guest who play the game!~
-  let point = 0;
   if (punkkub == null && !profile) {
-    point = 1;
+    await addGuestPVEPoint(interaction.user.id);
   }
   const message = await interaction.reply({
     content: "เลือกเลยว่าใครจะชนะ ซ้าย หรือ ขวา ?",
@@ -119,24 +118,6 @@ async function getQuestHandler(hasPunk, interaction) {
     });
     return;
   }
-}
-
-async function checkDaliyQuest(discordId, inputQuestId) {
-  const dailyQuests = gamesetting.daliyQuestsId;
-  const result = await Promise.all(
-    dailyQuests.map(async (questId) => {
-      const completed = await getCompletedQuestOf(discordId, questId);
-      if (completed !== undefined && questId == inputQuestId) {
-        return {
-          //cannot get quest
-          id: questId,
-          result: true,
-        };
-      }
-    })
-  );
-  const found = result.find((mapped) => mapped !== undefined);
-  return found;
 }
 
 module.exports = {

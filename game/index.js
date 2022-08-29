@@ -24,6 +24,7 @@ const sequelize = require("../database/sqlite/sqlite.database");
 const { getAllProfileData } = require("./services/leaderboard.service");
 const { log } = require("../database/csv.log.service");
 const gamesetting = require("./constants/gamesetting");
+const { updateState } = require("../database/sqlite/sqlite.service");
 
 sequelize.sync().then(() => console.log("state is now ready"));
 
@@ -197,6 +198,8 @@ bot.on("interactionCreate", async (interaction) => {
     }
   } catch (e) {
     // if (interaction.deferReply) return;
+    //update fighting state to false always if fighting gone
+    await updateState(interaction.user.id, false);
     console.log(e);
     await log(
       `${interaction.user.id} ${e.message} command: ${

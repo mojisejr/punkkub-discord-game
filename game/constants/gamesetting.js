@@ -15,6 +15,7 @@ module.exports = {
   pveChannelId: "1003238370358595644",
   pvpChannelId: "1013641883639099412",
   guestpveChannelId: "1013440351974981702",
+  logsChannelId: "",
   fightingParams: {
     counter: {
       l1: {

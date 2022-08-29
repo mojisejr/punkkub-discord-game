@@ -12,12 +12,12 @@ const { guestPve } = require("./gamemodes/gpve.controller");
 //GAME PLAY MODE CONTROLLER
 
 async function playGame(id, punkkub, message = "", selectedSide = null) {
-  // const result = await canPlay(punkkub.discordId);
-  // if (!result) {
-  //   reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
-  //   return;
-  // }
-  // updateState(punkkub.discordId, true);
+  const result = await canPlay(punkkub.discordId);
+  if (!result) {
+    reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
+    return;
+  }
+  await updateState(punkkub.discordId, true);
   //1 switch selected mode by command id then execute PVE, PVP etc. controller !
   switch (id) {
     case COMMANDS.PVE: {
@@ -60,6 +60,7 @@ async function playGame(id, punkkub, message = "", selectedSide = null) {
       break;
     }
     default: {
+      await updateState(punkkub.discordId, false);
       console.log("Invalid Command or You has no punk!");
       reply({
         content: `🧨 ERROR: กดคำสั่งผิดหวือเปล่า ?. ถ้าไม่ผิดถาม ! =>  non | KPUNK !`,
