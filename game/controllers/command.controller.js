@@ -15,21 +15,22 @@ const {
 async function beginProcessHandler(interaction, profile, punkkub) {
   const story = createBeginStory();
   // console.log(story);
+  if (!interaction.deferred) {
+    await interaction.deferReply({ ephemeral: true });
+  }
   if (!profile && punkkub != null) {
     console.log(`add new profile data for ${interaction.user.id}`);
-    await interaction.deferReply();
+
     await addNewProfile(interaction.user.id);
     await addNewInventory(interaction.user.id);
-    if (interaction.deferred) {
-      await interaction.editReply({ embeds: [story], ephemeral: true });
-    }
+    await interaction.editReply({ embeds: [story], ephemeral: true });
     // await interaction.reply("🤗 เรียบร้อย !");
     return;
   } else if (profile) {
-    await interaction.reply({ embeds: [story], ephemeral: true });
+    await interaction.editReply({ embeds: [story], ephemeral: true });
     return;
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content:
         "🤔 punkkub ในกระเป๋าไปไหนหรือเปล่า ? ทำไมหาไม่เจอ อาจจะลืมไว้ในตลาดมะ ?",
       ephemeral: true,
@@ -82,24 +83,27 @@ async function punkProfileHandler(interaction, punkkub) {
 
 //get quest handler
 async function getQuestHandler(hasPunk, interaction) {
+  if (!interaction.deferred) {
+    await interaction.deferReply({ ephemeral: tru });
+  }
   const selected = interaction.options.data[0].value;
   if (hasPunk && selected != null) {
     const active = await getActiveQuestOf(interaction.user.id, selected);
     if (active.data != null && active.data.progress > 0) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `🤔 รับเควสนี้ไปแล้วนี่ !!`,
         ephemeral: true,
       });
       return;
     }
     await addActiveQuestOf(interaction.user.id, selected);
-    await interaction.reply({
+    await interaction.editReply({
       content: `🧨 ไปลุยกันเลยดีกว่า !`,
       ephemeral: true,
     });
     return;
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content:
         "🤔 punkkub ในกระเป๋าไปไหนหรือเปล่า ? ทำไมหาไม่เจอ อาจจะลืมไว้ในตลาดมะ ?",
       ephemeral: true,

@@ -115,29 +115,35 @@ bot.on("interactionCreate", async (interaction) => {
           break;
         }
         case COMMANDS.LEADERBOARD: {
-          // await interaction.deferReply();
+          if (!interaction.deferred) {
+            await interaction.deferReply({ ephemeral: true });
+          }
+
           const { result, embed } = await getAllProfileData();
           if (result) {
-            await interaction.reply({
+            await interaction.editReply({
               embeds: [embed],
               // files: [{ attachment: embed, name: "punkImageSystem.png" }],
               ephemeral: true,
             });
           } else {
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.editReply({ embeds: [embed], ephemeral: true });
           }
           break;
         }
         case COMMANDS.PVE: {
+          if (!interaction.deferred) {
+            await interaction.deferReply();
+          }
           if (hasPunk) {
             //game play controller
-            await interaction.deferReply();
+
             if (interaction.deferred) {
               await playGame(COMMANDS.PVE, punkkub);
             }
             await interaction.deleteReply();
           } else {
-            await interaction.reply({
+            await interaction.editReply({
               content:
                 "🤔 punkkub ในกระเป๋าไปไหนหรือเปล่า ? ทำไมหาไม่เจอ อาจจะลืมไว้ในตลาดมะ ?",
               ephemeral: true,
@@ -146,9 +152,11 @@ bot.on("interactionCreate", async (interaction) => {
           break;
         }
         case COMMANDS.PVP: {
+          if (!interaction.deferred) {
+            await interaction.deferReply();
+          }
           if (hasPunk) {
             //game play controller
-            await interaction.deferReply();
             if (interaction.deferred) {
               await playGame(
                 COMMANDS.PVP,
@@ -158,7 +166,7 @@ bot.on("interactionCreate", async (interaction) => {
             }
             await interaction.deleteReply();
           } else {
-            await interaction.reply({
+            await interaction.editReply({
               content:
                 "🤔 punkkub ในกระเป๋าไปไหนหรือเปล่า ? ทำไมหาไม่เจอ อาจจะลืมไว้ในตลาดมะ ?",
               ephemeral: true,
@@ -171,9 +179,12 @@ bot.on("interactionCreate", async (interaction) => {
           break;
         }
         case COMMANDS.QUESTS: {
+          if (!interaction.deferred) {
+            await interaction.deferReply({ ephemeral: true });
+          }
           const allQuests = await getAllQuests();
           const list = await createQuestList(allQuests);
-          await interaction.reply({ embeds: [list], ephemeral: true });
+          await interaction.editReply({ embeds: [list], ephemeral: true });
           break;
         }
         case COMMANDS.GETQUEST: {

@@ -60,14 +60,15 @@ async function pvp1(playerPunk, enemyPunk) {
   // const { discordId, wallet } = punkkub;
 
   //check if canplay or reached to the daily limit
-  // const notLimited = await checkDailyPveLimit(discordId);
-  // if (!notLimited) {
-  //   headerMsg = await updateFightingMessage(
-  //     null,
-  //     `<@${discordId}> | ⚔️ ลุย Mode PVE ครบตามกำหนดของวันนี้แล้ว, ระบบจะ reset 7:00am ของทุกวัน แล้วแจกาน ❤️‍🔥`
-  //   );
-  //   return;
-  // }
+  const notLimited = await checkDailyPvpLimit(playerPunk.discordId);
+  if (!notLimited) {
+    headerMsg = await updateFightingMessage(
+      null,
+      `<@${playerPunk.discordId}> | ⚔️ ลุย Mode PVE ครบตามกำหนดของวันนี้แล้ว, ระบบจะ reset 7:00am ของทุกวัน แล้วแจกาน ❤️‍🔥`,
+      COMMANDS.PVP
+    );
+    return;
+  }
 
   //3 start header msg
   headerMsg = await updateFightingMessage(
