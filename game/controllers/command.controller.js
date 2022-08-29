@@ -9,7 +9,9 @@ const { createBeginStory } = require("../embeds/story.embed");
 const {
   addActiveQuestOf,
   getActiveQuestOf,
+  getCompletedQuestOf,
 } = require("../services/quest.service");
+const gamesetting = require("../constants/gamesetting");
 
 //Punk Game initialization process for verified holder
 async function beginProcessHandler(interaction, profile, punkkub) {
@@ -84,15 +86,22 @@ async function punkProfileHandler(interaction, punkkub) {
 //get quest handler
 async function getQuestHandler(hasPunk, interaction) {
   if (!interaction.deferred) {
-    await interaction.deferReply({ ephemeral: tru });
+    await interaction.deferReply({ ephemeral: true });
   }
   const selected = interaction.options.data[0].value;
   if (hasPunk && selected != null) {
     const active = await getActiveQuestOf(interaction.user.id, selected);
-    if (active.data != null && active.data.progress > 0) {
+    const doneDaliyQuest = await checkDaliyQuest(interaction.user.id, selected);
+    if (active.data != null && active.data.progress >= 0) {
       await interaction.editReply({
         content: `🤔 รับเควสนี้ไปแล้วนี่ !!`,
         ephemeral: true,
+      });
+      return;
+    }
+    if (doneDaliyQuest !== undefined && doneDaliyQuest.result) {
+      await interaction.editReply({
+        content: "👿 Daliy Quest เสร็จไปแล้วนี่ มารับใหม่พรุ่งนี้นะ",
       });
       return;
     }
@@ -110,6 +119,24 @@ async function getQuestHandler(hasPunk, interaction) {
     });
     return;
   }
+}
+
+async function checkDaliyQuest(discordId, inputQuestId) {
+  const dailyQuests = gamesetting.daliyQuestsId;
+  const result = await Promise.all(
+    dailyQuests.map(async (questId) => {
+      const completed = await getCompletedQuestOf(discordId, questId);
+      if (completed !== undefined && questId == inputQuestId) {
+        return {
+          //cannot get quest
+          id: questId,
+          result: true,
+        };
+      }
+    })
+  );
+  const found = result.find((mapped) => mapped !== undefined);
+  return found;
 }
 
 module.exports = {

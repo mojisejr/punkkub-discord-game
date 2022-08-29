@@ -11,6 +11,7 @@ module.exports = {
   },
   dailyPveLimit: 5,
   dailyPvpLimit: 5,
+  daliyQuestsId: [1, 2],
   pveChannelId: "1003238370358595644",
   pvpChannelId: "1013641883639099412",
   guestpveChannelId: "1013440351974981702",

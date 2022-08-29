@@ -153,6 +153,7 @@ module.exports = {
   addActiveQuestOf,
   getActiveQuestsOf,
   getActiveQuestOf,
+  getCompletedQuestOf,
   getCompletedQuestsOf,
   updateActiveQuestOf,
   deleteActiveQuestOf,
