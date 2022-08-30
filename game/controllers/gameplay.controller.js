@@ -11,14 +11,20 @@ const { guestPve } = require("./gamemodes/gpve.controller");
 
 //GAME PLAY MODE CONTROLLER
 
-async function playGame(id, punkkub, message = "", selectedSide = null) {
+async function playGame(
+  id,
+  punkkub,
+  interaction,
+  message = "",
+  selectedSide = null
+) {
   let result = true;
   if (selectedSide == null) {
     result = await canPlay(punkkub.discordId);
     await updateState(punkkub.discordId, true);
   }
   if (!result) {
-    reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
+    await interaction.reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
     return;
   }
 
@@ -35,17 +41,21 @@ async function playGame(id, punkkub, message = "", selectedSide = null) {
       //2 execute pvp controller function
       const enemyPunk = await getPunkByDiscordId(message);
       if (enemyPunk == null) {
-        reply({
+        console.log(enemyPunk);
+        await updateState(punkkub.discordId, false);
+        await interaction.reply({
           content: `❌ : หา punkkub ใน wallet เพื่อนอีกคนไม่เจอ แฮะ อาจจะไม่มี, ลองคนอื่นมะ`,
-          emphemeral: true,
+          ephemeral: true,
         });
+
         return;
       }
 
       if (punkkub.discordId == enemyPunk.discordId) {
-        reply({
+        await updateState(punkkub.discordId, false);
+        interaction.reply({
           content: `🤣 คนอะไรจะมาฆ่า ตัวเองซะแล้ววว  !!, เปลี่ยนคนแล้วลองใหม่ !🤣`,
-          emphemeral: true,
+          ephemeral: true,
         });
         return;
       }
@@ -68,7 +78,7 @@ async function playGame(id, punkkub, message = "", selectedSide = null) {
       console.log("Invalid Command or You has no punk!");
       reply({
         content: `🧨 ERROR: กดคำสั่งผิดหวือเปล่า ?. ถ้าไม่ผิดถาม ! =>  non | KPUNK !`,
-        emphemeral: true,
+        ephemeral: true,
       });
       break;
     }

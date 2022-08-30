@@ -71,6 +71,7 @@ async function autoPve1(punkkub) {
   //check if canplay or reached to the daily limit
   const notLimited = await checkDailyPveLimit(discordId);
   if (!notLimited) {
+    await updateState(discordId, false);
     headerMsg = await updateFightingMessage(
       null,
       `<@${discordId}> | ⚔️ ลุย Mode PVE ครบตามกำหนดของวันนี้แล้ว, ระบบจะ reset 7:00am ของทุกวัน แล้วแจกาน ❤️‍🔥`,
@@ -106,6 +107,7 @@ async function autoPve1(punkkub) {
   // }
 
   if (enemy.result && player.result) {
+    await updateState(player.discordId, false);
     await updateFightingMessage(
       headerMsg,
       `🧨 Error: Cannot play game please tell <@${process.env.devId}>`

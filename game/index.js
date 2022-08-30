@@ -140,7 +140,7 @@ bot.on("interactionCreate", async (interaction) => {
             //game play controller
 
             if (interaction.deferred) {
-              await playGame(COMMANDS.PVE, punkkub);
+              await playGame(COMMANDS.PVE, punkkub, interaction);
             }
             await interaction.deleteReply();
           } else {
@@ -162,6 +162,7 @@ bot.on("interactionCreate", async (interaction) => {
               await playGame(
                 COMMANDS.PVP,
                 punkkub,
+                interaction,
                 interaction.options.data[0].value
               );
             }

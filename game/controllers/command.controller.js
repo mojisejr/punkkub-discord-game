@@ -59,7 +59,13 @@ async function guestPveProcessHandler(interaction, punkkub) {
     .then((collected) => {
       const msg = collected.first();
       const selectedSide = msg.users.reaction.emoji.name;
-      playGame(COMMANDS.GPVE, null, interaction.user.id, selectedSide);
+      playGame(
+        COMMANDS.GPVE,
+        null,
+        interaction,
+        interaction.user.id,
+        selectedSide
+      );
     })
     .catch(async (e) => {
       // console.log(e);

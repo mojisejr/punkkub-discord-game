@@ -62,6 +62,7 @@ async function pvp1(playerPunk, enemyPunk) {
   //check if canplay or reached to the daily limit
   const notLimited = await checkDailyPvpLimit(playerPunk.discordId);
   if (!notLimited) {
+    await updateState(playerPunk.discordId, false);
     headerMsg = await updateFightingMessage(
       null,
       `<@${playerPunk.discordId}> | ⚔️ ลุย Mode PVE ครบตามกำหนดของวันนี้แล้ว, ระบบจะ reset 7:00am ของทุกวัน แล้วแจกาน ❤️‍🔥`,
@@ -109,6 +110,7 @@ async function pvp1(playerPunk, enemyPunk) {
       `🧨 Error: Cannot play game please tell <@${process.env.devId}>`,
       COMMANDS.PVP
     );
+    await updateState(player.discordId, false);
     return;
   }
 

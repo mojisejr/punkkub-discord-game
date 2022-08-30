@@ -47,7 +47,7 @@ async function getPunkByDiscordName(discordName) {
 
 async function getPunkByDiscordId(discordId) {
   const allPunk = await getAllVerifiedPunk();
-  const found = allPunk.find((punk) => punk.discordId == discordId);
+  const found = allPunk.find((punk) => punk.discordId.includes(discordId));
 
   if (found) {
     return found;
