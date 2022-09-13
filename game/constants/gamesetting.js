@@ -1,6 +1,6 @@
 module.exports = {
-  status: 1,
-  maxHp: 20,
+  status: 0,
+  maxHp: 50,
   attributesOffset: 3,
   rarity: {
     Normal: "Normal",
@@ -9,11 +9,11 @@ module.exports = {
     SuperSpecialRare: "Super Spcecial Rare",
     UltraRare: "Ultra Rare",
   },
-  dailyPveLimit: 5,
-  dailyPvpLimit: 5,
+  dailyPveLimit: 10,
+  dailyPvpLimit: 10,
   daliyQuestsId: [1, 2],
-  pveChannelId: "1003238370358595644",
-  pvpChannelId: "1013641883639099412",
+  pveChannelId: "1019235623292375080",
+  pvpChannelId: "1019236029586214982",
   guestpveChannelId: "1013440351974981702",
   logsChannelId: "",
   fightingParams: {
@@ -31,7 +31,7 @@ module.exports = {
         rate: 150,
       },
     },
-    multiplier: 5,
+    multiplier: 2,
   },
   itemParams: {
     counter: {

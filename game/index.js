@@ -139,9 +139,7 @@ bot.on("interactionCreate", async (interaction) => {
           if (hasPunk) {
             //game play controller
 
-            if (interaction.deferred) {
-              await playGame(COMMANDS.PVE, punkkub, interaction);
-            }
+            await playGame(COMMANDS.PVE, punkkub, interaction);
             await interaction.deleteReply();
           } else {
             await interaction.editReply({

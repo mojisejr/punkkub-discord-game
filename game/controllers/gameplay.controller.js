@@ -24,7 +24,10 @@ async function playGame(
     await updateState(punkkub.discordId, true);
   }
   if (!result) {
-    await interaction.reply("🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !");
+    await interaction.editReply({
+      content: "🧐 ใจเย็นๆ ค่อยๆ เล่นที่ละรอบนะ !",
+      ephemeral: true,
+    });
     return;
   }
 

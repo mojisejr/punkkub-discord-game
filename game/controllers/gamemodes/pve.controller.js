@@ -96,15 +96,15 @@ async function autoPve1(punkkub) {
   enemy = enemy.result === true ? enemy.data : null;
   player = player.result === true ? player.data : null;
 
-  // const fightable = canFight(player, enemy);
-  // if (!fightable) {
-  //   await updateFightingMessage(
-  //     headerMsg,
-  //     "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
-  //   );
-  //   await updateState(player.discordId, false);
-  //   return;
-  // }
+  const fightable = canFight(player, enemy);
+  if (!fightable) {
+    await updateFightingMessage(
+      headerMsg,
+      "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
+    );
+    await updateState(player.discordId, false);
+    return;
+  }
 
   if (enemy.result && player.result) {
     await updateState(player.discordId, false);

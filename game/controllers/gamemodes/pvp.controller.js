@@ -95,14 +95,14 @@ async function pvp1(playerPunk, enemyPunk) {
   enemy = enemy.result === true ? enemy.data : null;
   player = player.result === true ? player.data : null;
 
-  // const fightable = canFight(player, enemy);
-  // if (!fightable) {
-  //   await updateFightingMessage(
-  //     headerMsg,
-  //     "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
-  //   );
-  //   return;
-  // }
+  const fightable = canFight(player, enemy);
+  if (!fightable) {
+    await updateFightingMessage(
+      headerMsg,
+      "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
+    );
+    return;
+  }
 
   if (enemy.result && player.result) {
     await updateFightingMessage(
