@@ -11,6 +11,7 @@ const {
   renderFightingImage,
   renderWinnerImage,
   renderFightingImage1,
+  LoadNFTImage,
 } = require("../../renderer/renderer");
 
 //common figting
@@ -114,7 +115,15 @@ async function pvp1(playerPunk, enemyPunk) {
     return;
   }
 
-  const image = await renderFightingImage(player, enemy);
+  const playerImage = await LoadNFTImage(player.imageUrl);
+  const enemyImage = await LoadNFTImage(enemy.imageUrl);
+
+  const image = await renderFightingImage(
+    player,
+    enemy,
+    playerImage,
+    enemyImage
+  );
   imageMsg = await updateFightingMessage(
     null,
     {
@@ -182,7 +191,9 @@ async function pvp1(playerPunk, enemyPunk) {
       selectedAttr1,
       selectedAttr2,
       counter,
-      atk
+      atk,
+      playerImage,
+      enemyImage
     );
 
     await updateFightingMessage(
@@ -195,7 +206,7 @@ async function pvp1(playerPunk, enemyPunk) {
 
     if (player.hp <= 0 || enemy.hp <= 0) {
       if (player.hp <= 0) {
-        const winImage = await renderWinnerImage(player, enemy, 1);
+        const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
         await updatePVPLoseCount(player.discordId);
         await updatePvpCount(player.discordId);
         const quest = await updateQuestProgress(player.discordId, 2);
@@ -219,7 +230,7 @@ async function pvp1(playerPunk, enemyPunk) {
         );
       } else {
         const exp = calculateEXP(counter);
-        const winImage = await renderWinnerImage(player, enemy, 0);
+        const winImage = await renderWinnerImage(playerImage, enemyImage, 0);
         await updateExpDiscord(player.discordId, exp);
         await levelUpDiscord(player.discordId);
         await updatePVPWinCount(player.discordId);

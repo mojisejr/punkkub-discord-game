@@ -16,6 +16,19 @@ const commands = [
     .setName("punkpve")
     .setDescription(
       "PVE ทำสงครามกับเหล่า NFT ใน bitkub chain ! ไปประลองฝีมือกัน ! (รับ EXP และ Item ต่างๆ)"
+    )
+    .addStringOption((option) =>
+      option
+        .setName("dungeon")
+        .setDescription("เลือกเลยจะสู้กับคราย!")
+        .setRequired(true)
+        .addChoices(
+          {
+            name: "Ape",
+            value: "Ape",
+          },
+          { name: "Zilla", value: "Zilla" }
+        )
     ),
   new SlashCommandBuilder()
     .setName("quest")

@@ -1,5 +1,6 @@
 const { pvp1 } = require("./gamemodes/pvp.controller");
 const { autoPve1 } = require("./gamemodes/pve.controller");
+const { autoPve2 } = require("./gamemodes/pve.zilla.controller");
 const { COMMANDS } = require("../constants/commands");
 const { reply } = require("./message.controller");
 const {
@@ -35,7 +36,14 @@ async function playGame(
   switch (id) {
     case COMMANDS.PVE: {
       console.log(`${punkkub.discordName} start auto PVE`);
-      await autoPve1(punkkub);
+      const dungeon = interaction.options.data[0].value;
+      if (dungeon == "Ape") {
+        await autoPve1(punkkub);
+        break;
+      } else if (dungeon == "Zilla") {
+        await autoPve2(punkkub);
+        break;
+      }
       break;
     }
     case COMMANDS.PVP: {

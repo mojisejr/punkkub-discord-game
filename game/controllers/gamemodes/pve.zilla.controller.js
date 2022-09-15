@@ -4,10 +4,14 @@ require("dotenv").config({
 const { updateFightingMessage } = require("../message.controller");
 const {
   getRandomPunkFromWallet,
-  getRandomStatusFromAttribute,
 } = require("../smartcontracts/punkkub.controller");
-const { dungeon } = require("../../constants/contract");
-const { maxHp, attributesOffset } = require("../../constants/gamesetting");
+
+const {
+  getRandomZilla,
+  getRandomStatusZillaAttribute,
+} = require("../smartcontracts/zillafren.controller");
+
+const { maxHp } = require("../../constants/gamesetting");
 const {
   renderFightingImage,
   renderWinnerImage,
@@ -18,22 +22,41 @@ const {
 //common figting
 const { updateFighting1, canFight } = require("./../fighting.conntroller");
 //common calculate
+const { calculateEXP } = require("./../level.controller");
 //common item usage
 const {
   itemUseTrigger,
   randomItemFromWallet,
+  randomResource,
+  randomAmounts,
 } = require("./../item.controller");
 //item table
 const items = require("../../constants/item.table");
 //discord Exp update
-const { COMMANDS } = require("../../constants/commands");
+const { updateExpDiscord } = require("../../services/userInfo.service");
+//discord level update
+const { levelUpDiscord } = require("../../constants/exp.table");
+//disocord win lost update
+const {
+  updateWinCount,
+  updateLoseCount,
+  updatePveCount,
+  checkDailyPveLimit,
+} = require("../../services/fighting.service");
 
+const { logFighting } = require("../../../database/log.service");
+const { updateState } = require("../../../database/sqlite/sqlite.service");
+
+const resources = require("../../constants/drop.table");
 //sleep timer
 const { sleep } = require("../../utils/sleep");
+const { saveItemToInventory } = require("../../services/inventory.service");
+const { updateQuestProgress } = require("../../services/quest.service");
+const { updateGlobalExp } = require("../../services/global.service");
+const { COMMANDS } = require("../../constants/commands");
 
-async function guestPve(selectedSide, discordId) {
+async function autoPve2(punkkub) {
   //1 Set Up the Message Line for replying
-  // console.log("selected side", selectedSide);
 
   let headerMsg;
   let imageMsg;
@@ -43,43 +66,60 @@ async function guestPve(selectedSide, discordId) {
   let playerUsedItems = [];
   let enemyUsedItems = [];
 
+  //2 get discordId from punkkub holder
+  const { discordId, wallet } = punkkub;
+
+  //check if canplay or reached to the daily limit
+  const notLimited = await checkDailyPveLimit(discordId);
+  if (!notLimited) {
+    await updateState(discordId, false);
+    headerMsg = await updateFightingMessage(
+      null,
+      `<@${discordId}> | ⚔️ ลุย Mode PVE ครบตามกำหนดของวันนี้แล้ว, ระบบจะ reset 7:00am ของทุกวัน แล้วแจกาน ❤️‍🔥`,
+      COMMANDS.PVE
+    );
+    return;
+  }
+
   //3 start header msg
   headerMsg = await updateFightingMessage(
     null,
-    `<@${discordId}> | ⚔️ ลุย GUEST GUEST GUEST !! ⚔`,
-    COMMANDS.GPVE
+    `<@${discordId}> | ⚔️ ลุย Mode PVE x ZILLAFRENS !! ⚔`,
+    COMMANDS.PVE
   );
 
   //4 get punk from wallet and dungeon
-  let enemy = await getRandomPunkFromWallet(dungeon, maxHp, "dungeon");
-  let player = await getRandomPunkFromWallet(dungeon, maxHp, "dungeon");
+  //   let enemy = await getRandomNFTFromWallet(marketplce, maxHp, "apekub");
+  // let enemy = await getRandomPunkFromWallet(dungeon, maxHp, "apekub");
+  let enemy = await getRandomZilla(maxHp);
+  let player = await getRandomPunkFromWallet(wallet, maxHp, discordId);
 
   //5 check if any undefined
   enemy = enemy.result === true ? enemy.data : null;
   player = player.result === true ? player.data : null;
 
-  // const fightable = canFight(player, enemy);
-  // if (!fightable) {
-  //   await updateFightingMessage(
-  //     headerMsg,
-  //     "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
-  //   );
-  //   await updateState(player.discordId, false);
-  //   return;
-  // }
+  //   const fightable = canFight(player, enemy);
+  //   if (!fightable) {
+  //     await updateFightingMessage(
+  //       headerMsg,
+  //       "🙄 ใครบางคนแข็งแกร่งมากเกินไป ..., ลองใหม่อีกที ! 🙃"
+  //     );
+  //     await updateState(player.discordId, false);
+  //     return;
+  //   }
+
+  //LoadImage Before fight
+  const playerImage = await LoadNFTImage(player.imageUrl);
+  const enemyImage = await LoadNFTImage(enemy.imageUrl);
 
   if (enemy.result && player.result) {
+    await updateState(player.discordId, false);
     await updateFightingMessage(
       headerMsg,
-      `🧨 Error: Cannot play game please tell <@${process.env.devId}>`,
-      COMMANDS.GPVE
+      `🧨 Error: Cannot play game please tell <@${process.env.devId}>`
     );
     return;
   }
-
-  //Load Image
-  const playerImage = await LoadNFTImage(player.imageUrl);
-  const enemyImage = await LoadNFTImage(enemy.imageUrl);
 
   const image = await renderFightingImage(
     player,
@@ -92,24 +132,28 @@ async function guestPve(selectedSide, discordId) {
     {
       files: [{ attachment: image, name: "punkImageSystem.png" }],
     },
-    COMMANDS.GPVE
+    COMMANDS.PVE
   );
   await updateFightingMessage(
     headerMsg,
     `⚔ ***${player.tokenId} สู้กับ ${enemy.tokenId}*** ⚔`,
-    COMMANDS.GPVE
+    COMMANDS.PVE
   );
   gameMsg = await updateFightingMessage(
     null,
     `💪⚔️🧨🤖❤️‍🔥🔫🔪🪓🛡💣`,
-    COMMANDS.GPVE
+    COMMANDS.PVE
   );
 
   while (fighting) {
     counter++;
     //1 select random attribute for fight
-    let { selectedAttr1, selectedAttr2 } = getRandomStatusFromAttribute(
-      attributesOffset,
+    // let { selectedAttr1, selectedAttr2 } = getRandomStatusFromAttribute(
+    //   attributesOffset,
+    //   player,
+    //   enemy
+    // );
+    let { selectedAttr1, selectedAttr2 } = getRandomStatusZillaAttribute(
       player,
       enemy
     );
@@ -164,7 +208,7 @@ async function guestPve(selectedSide, discordId) {
       {
         files: [{ attachment: gameImage, name: "fighting.png" }],
       },
-      COMMANDS.GPVE
+      COMMANDS.PVE
     );
 
     // await updateFightingMessage(
@@ -197,90 +241,78 @@ async function guestPve(selectedSide, discordId) {
     // );
 
     if (player.hp <= 0 || enemy.hp <= 0) {
-      if (player.hp <= 0 && selectedSide == "👈") {
+      if (player.hp <= 0) {
         const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
+        await updateLoseCount(player.discordId);
+        await updatePveCount(player.discordId);
+        const quest = await updateQuestProgress(player.discordId, 1);
         await updateFightingMessage(
           headerMsg,
-          `💪***  อ้าว ...  ${enemy.tokenId} ชนะ ! ${enemy.tokenId}***💪️`,
-          COMMANDS.GPVE
+          `💪*** ยินดีด้วยจ้าาาา ! ${enemy.tokenId}***💪️`,
+          COMMANDS.PVE
         );
         await updateFightingMessage(
           imageMsg,
           {
             files: [{ attachment: winImage, name: "punkImageSystem.png" }],
           },
-          COMMANDS.GPVE
+          COMMANDS.PVE
         );
         await updateFightingMessage(
           gameMsg,
-          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep .. คุนเลือกผิดฝั่งแล้ว !~***`,
-          COMMANDS.GPVE
+          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep ..~***
+            ${quest.msg}
+            `,
+          COMMANDS.PVE
         );
-      } else if (player.hp <= 0 && selectedSide == "👉") {
-        const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
+      } else {
+        const exp = calculateEXP(counter);
+        const winImage = await renderWinnerImage(playerImage, enemyImage, 0);
+        const resource = randomResource(resources);
+        const amounts = randomAmounts(counter);
+        await updateExpDiscord(player.discordId, exp);
+        await levelUpDiscord(player.discordId);
+        await updateWinCount(player.discordId);
+        await updatePveCount(player.discordId);
+        await saveItemToInventory(player.discordId, resource.itemId, amounts);
+        const quest = await updateQuestProgress(player.discordId, 1);
+        const gExp = await updateGlobalExp(exp, player.discordId);
         await updateFightingMessage(
           headerMsg,
           `💪*** ยินดีด้วยจ้าาาา ! ${player.tokenId}***💪`,
-          COMMANDS.GPVE
+          COMMANDS.PVE
         );
         await updateFightingMessage(
           imageMsg,
           {
             files: [{ attachment: winImage, name: "punkImageSystem.png" }],
           },
-          COMMANDS.GPVE
+          COMMANDS.PVE
         );
         await updateFightingMessage(
           gameMsg,
-          `***${player.tokenId} ชนะ !! <@${discordId}> ..~  แจ๋ว ! ลองใหม่ป๊ะหละ ? หรือจะไปหยิบ PUNK มาจัดเต็มเลยดี ? !!***`,
-          COMMANDS.GPVE
-        );
-      } else if (enemy.hp <= 0 && selectedSide == "👈") {
-        const winImage = await renderWinnerImage(playerImage, enemyImage, 0);
-        await updateFightingMessage(
-          headerMsg,
-          `💪*** ยินดีด้วยจ้าาาา ! ${player.tokenId}***💪`,
-          COMMANDS.GPVE
-        );
-        await updateFightingMessage(
-          imageMsg,
-          {
-            files: [{ attachment: winImage, name: "punkImageSystem.png" }],
-          },
-          COMMANDS.GPVE
-        );
-        await updateFightingMessage(
-          gameMsg,
-          `***${player.tokenId} ชนะ !! <@${player.discordId}> ..~  แจ๋ว ! ลองใหม่ป๊ะหละ ? หรือจะไปหยิบ PUNK มาจัดเต็มเลยดี ? !!***`,
-          COMMANDS.GPVE
-        );
-      } else if (enemy.hp <= 0 && selectedSide == "👉") {
-        const winImage = await renderWinnerImage(playerImage, enemyImage, 0);
-        await updateFightingMessage(
-          headerMsg,
-          `💪*** อ้าว ...  ${enemy.tokenId} ชนะ !***💪️`,
-          COMMANDS.GPVE
-        );
-        await updateFightingMessage(
-          imageMsg,
-          {
-            files: [{ attachment: winImage, name: "punkImageSystem.png" }],
-          },
-          COMMANDS.GPVE
-        );
-        await updateFightingMessage(
-          gameMsg,
-          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep .. คุนเลือกผิดฝั่งแล้ว !~***`,
-          COMMANDS.GPVE
+          `***${player.tokenId} ชนะ !! <@${player.discordId}> ..~ ***
+              🍆 ได้รับค่าประสบการณ์ [EXP] : [${exp}]
+              ⚙️ คอมมูได้รับประสมการณ์ [GEXP] : [${
+                gExp <= 0 ? "ต้อง level 5 ขึ้นไป" : gExp
+              }]
+              ${resource.itemEmoji} ได้รับ ${resource.itemName} x [${amounts}]
+              ${quest.msg}`,
+          COMMANDS.PVE
         );
       }
 
       fighting = false;
+      const winId = player.hp <= 0 ? enemy.discordId : player.discordId;
+      const lostId = player.hp <= 0 ? player.discordId : enemy.discordId;
+      const timestamp = new Date().getTime();
+      await logFighting(winId, lostId, counter, timestamp, "pve");
+      await updateState(player.discordId, false);
     }
     await sleep(700);
   }
 }
 
 module.exports = {
-  guestPve,
+  autoPve2,
 };

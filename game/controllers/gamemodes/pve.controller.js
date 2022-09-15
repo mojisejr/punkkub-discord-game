@@ -16,6 +16,7 @@ const {
   renderFightingImage,
   renderWinnerImage,
   renderFightingImage1,
+  LoadNFTImage,
 } = require("../../renderer/renderer");
 
 //common figting
@@ -83,7 +84,7 @@ async function autoPve1(punkkub) {
   //3 start header msg
   headerMsg = await updateFightingMessage(
     null,
-    `<@${discordId}> | ⚔️ ลุย Mode PVE !! ⚔`,
+    `<@${discordId}> | ⚔️ ลุย Mode PVE x APEKUB !! ⚔`,
     COMMANDS.PVE
   );
 
@@ -115,7 +116,15 @@ async function autoPve1(punkkub) {
     return;
   }
 
-  const image = await renderFightingImage(player, enemy);
+  const playerImage = await LoadNFTImage(player.imageUrl);
+  const enemyImage = await LoadNFTImage(enemy.imageUrl);
+
+  const image = await renderFightingImage(
+    player,
+    enemy,
+    playerImage,
+    enemyImage
+  );
   imageMsg = await updateFightingMessage(
     null,
     {
@@ -187,7 +196,9 @@ async function autoPve1(punkkub) {
       selectedAttr1,
       selectedAttr2,
       counter,
-      atk
+      atk,
+      playerImage,
+      enemyImage
     );
 
     await updateFightingMessage(
@@ -229,7 +240,7 @@ async function autoPve1(punkkub) {
 
     if (player.hp <= 0 || enemy.hp <= 0) {
       if (player.hp <= 0) {
-        const winImage = await renderWinnerImage(player, enemy, 1);
+        const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
         await updateLoseCount(player.discordId);
         await updatePveCount(player.discordId);
         const quest = await updateQuestProgress(player.discordId, 1);
@@ -254,7 +265,7 @@ async function autoPve1(punkkub) {
         );
       } else {
         const exp = calculateEXP(counter);
-        const winImage = await renderWinnerImage(player, enemy, 0);
+        const winImage = await renderWinnerImage(playerImage, enemyImage, 0);
         const resource = randomResource(resources);
         const amounts = randomAmounts(counter);
         await updateExpDiscord(player.discordId, exp);

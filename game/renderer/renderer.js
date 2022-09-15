@@ -1,4 +1,5 @@
 const { createCanvas, loadImage } = require("canvas");
+const { CommandInteractionOptionResolver } = require("discord.js");
 const basePath = process.cwd();
 
 const width = 720;
@@ -28,7 +29,9 @@ async function renderFightingImage1(
   selectedAttr1,
   selectedAttr2,
   counter,
-  atk
+  atk,
+  player1Image,
+  player2Image
 ) {
   // console.log(`
   // รอบที่ : [${counter}]
@@ -57,8 +60,8 @@ async function renderFightingImage1(
   const ctx = canvas.getContext("2d");
 
   const frameImage = await loadImage(framePath1);
-  const player1Image = await loadImage(player.imageUrl);
-  const player2Image = await loadImage(enemy.imageUrl);
+  // const player1Image = await loadImage(player.imageUrl);
+  // const player2Image = await loadImage(enemy.imageUrl);
 
   ctx.drawImage(frameImage, 0, 0, frame.w, frame.h);
   ctx.drawImage(player1Image, pic1.x, pic1.y, pic1.w, pic1.h);
@@ -112,13 +115,25 @@ async function renderFightingImage1(
   return canvas.toBuffer();
 }
 
-async function renderFightingImage(player1, player2) {
+async function LoadNFTImage(url) {
+  const image = await loadImage(url);
+  return image;
+}
+
+async function renderFightingImage(
+  player1,
+  player2,
+  player1Image,
+  player2Image
+) {
+  console.log(player1Image);
+  console.log(player2Image);
   const canvas = createCanvas(width, height);
 
   const frame = await loadImage(framePath);
   const vs = await loadImage(vsPath);
-  const player1Image = await loadImage(player1.imageUrl);
-  const player2Image = await loadImage(player2.imageUrl);
+  // const player1Image = await loadImage(player1.imageUrl);
+  // const player2Image = await loadImage(player2.imageUrl);
 
   const ctx = canvas.getContext("2d");
 
@@ -132,7 +147,7 @@ async function renderFightingImage(player1, player2) {
   return canvas.toBuffer();
 }
 
-async function renderWinnerImage(player1, player2, winnerIndex) {
+async function renderWinnerImage(player1Image, player2Image, winnerIndex) {
   const frameDim = { w: 1920, h: 1080 };
   const canvas = createCanvas(frameDim.w, frameDim.h);
   const pic1 = { x: 460, y: 234, w: 375, h: 375 };
@@ -141,8 +156,8 @@ async function renderWinnerImage(player1, player2, winnerIndex) {
   const frame = await loadImage(framePath1);
   const playerWin = await loadImage(playerWinnerPath);
   const enemyWin = await loadImage(enemyWinnerPath);
-  const player1Image = await loadImage(player1.imageUrl);
-  const player2Image = await loadImage(player2.imageUrl);
+  // const player1Image = await loadImage(player1.imageUrl);
+  // const player2Image = await loadImage(player2.imageUrl);
 
   const ctx = canvas.getContext("2d");
 
@@ -249,4 +264,5 @@ module.exports = {
   renderWinnerImage,
   renderFightingImage1,
   renderLeaderBoard,
+  LoadNFTImage,
 };
