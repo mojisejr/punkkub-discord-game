@@ -212,10 +212,11 @@ bot.on("interactionCreate", async (interaction) => {
       "interaction level"
     );
     if (!interaction.deferred) {
-      await interaction.reply({
-        content: `Gameplay Selector : ${e.message}: contact : NON | PUNK`,
-        ephemeral: true,
-      });
+      await interaction.deferReply();
     }
+    await interaction.editReply({
+      content: `Gameplay Selector : ${e.message}: contact : NON | PUNK`,
+      ephemeral: true,
+    });
   }
 });

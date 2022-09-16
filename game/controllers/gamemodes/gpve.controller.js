@@ -16,7 +16,10 @@ const {
 } = require("../../renderer/renderer");
 
 //common figting
-const { updateFighting1, canFight } = require("./../fighting.conntroller");
+//common figting
+const { updateFightingV2 } = require("../fighting.v2.controller");
+//items table
+const itemsV2 = require("../../constants/item.table.v2");
 //common calculate
 //common item usage
 const {
@@ -24,7 +27,6 @@ const {
   randomItemFromWallet,
 } = require("./../item.controller");
 //item table
-const items = require("../../constants/item.table");
 //discord Exp update
 const { COMMANDS } = require("../../constants/commands");
 
@@ -121,16 +123,16 @@ async function guestPve(selectedSide, discordId) {
     let enemyItem;
 
     if (playerItemFlag) {
-      playerItem = randomItemFromWallet(items);
+      playerItem = randomItemFromWallet(itemsV2);
       playerUsedItems.push(playerItem);
     }
     if (enemyItemFlag) {
-      enemyItem = randomItemFromWallet(items);
+      enemyItem = randomItemFromWallet(itemsV2);
       enemyUsedItems.push(enemyItem);
     }
 
     //3 update atk status
-    [_, _, hittedToken, atk] = updateFighting1(
+    [_, _, hittedToken, atk] = updateFightingV2(
       player,
       enemy,
       selectedAttr1,

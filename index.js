@@ -1,4 +1,4 @@
 require("dotenv").config({
-  path: "./config.env",
+  path: "./dev_config.env",
 });
 require("./game");

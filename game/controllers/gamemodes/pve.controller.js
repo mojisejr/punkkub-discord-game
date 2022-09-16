@@ -4,14 +4,13 @@ require("dotenv").config({
 const { updateFightingMessage } = require("../message.controller");
 const {
   getRandomPunkFromWallet,
-  getRandomStatusFromAttribute,
 } = require("../smartcontracts/punkkub.controller");
 const {
   getRandomNFTFromWallet,
   getRandomStatusApeAttribute,
 } = require("../smartcontracts/apekub.controller");
-const { dungeon, apekub, marketplce } = require("../../constants/contract");
-const { maxHp, attributesOffset } = require("../../constants/gamesetting");
+const { marketplce } = require("../../constants/contract");
+const { maxHp } = require("../../constants/gamesetting");
 const {
   renderFightingImage,
   renderWinnerImage,
@@ -20,7 +19,10 @@ const {
 } = require("../../renderer/renderer");
 
 //common figting
-const { updateFighting1, canFight } = require("./../fighting.conntroller");
+const { updateFightingV2, canFight } = require("../fighting.v2.controller");
+//items table
+const itemsV2 = require("../../constants/item.table.v2");
+
 //common calculate
 const { calculateEXP } = require("./../level.controller");
 //common item usage
@@ -30,8 +32,6 @@ const {
   randomResource,
   randomAmounts,
 } = require("./../item.controller");
-//item table
-const items = require("../../constants/item.table");
 //discord Exp update
 const { updateExpDiscord } = require("../../services/userInfo.service");
 //discord level update
@@ -163,16 +163,16 @@ async function autoPve1(punkkub) {
     let enemyItem;
 
     if (playerItemFlag) {
-      playerItem = randomItemFromWallet(items);
+      playerItem = randomItemFromWallet(itemsV2);
       playerUsedItems.push(playerItem);
     }
     if (enemyItemFlag) {
-      enemyItem = randomItemFromWallet(items);
+      enemyItem = randomItemFromWallet(itemsV2);
       enemyUsedItems.push(enemyItem);
     }
 
     //3 update atk status
-    [_, _, hittedToken, atk] = updateFighting1(
+    [_, _, hittedToken, atk] = updateFightingV2(
       player,
       enemy,
       selectedAttr1,

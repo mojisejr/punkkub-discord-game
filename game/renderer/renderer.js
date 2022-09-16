@@ -1,5 +1,4 @@
 const { createCanvas, loadImage } = require("canvas");
-const { CommandInteractionOptionResolver } = require("discord.js");
 const basePath = process.cwd();
 
 const width = 720;
@@ -33,6 +32,19 @@ async function renderFightingImage1(
   player1Image,
   player2Image
 ) {
+  const playerItemDmg =
+    playerItem === undefined
+      ? 0
+      : playerItem.itemEffect.player[selectedAttr1.trait_type];
+  const enemyItemDmg =
+    enemyItem === undefined
+      ? 0
+      : enemyItem.itemEffect.player[selectedAttr2.trait_type];
+  // console.log("round: ", counter);
+  // console.log("physical atk", atk);
+  // console.log("player item damage: ", playerItemDmg);
+  // console.log("enemy item damage: ", enemyItemDmg);
+
   // console.log(`
   // รอบที่ : [${counter}]
   // @${
@@ -97,6 +109,22 @@ async function renderFightingImage1(
   } else if (hittedToken == 1) {
     renderText(`-${atk}`, ctx, atk2.x, atk2.y, 120, "#FFFF00");
   }
+  renderText(
+    `-${enemyItemDmg > 0 ? enemyItemDmg : ""}`,
+    ctx,
+    (atk1.x += 100),
+    (atk1.y += 80),
+    100,
+    "#FFFF00"
+  );
+  renderText(
+    `-${playerItemDmg > 0 ? playerItemDmg : ""}`,
+    ctx,
+    (atk2.x += 100),
+    (atk2.y += 80),
+    100,
+    "#FFFF00"
+  );
 
   //item checking
   if (item1Image != null && item2Image == null) {
