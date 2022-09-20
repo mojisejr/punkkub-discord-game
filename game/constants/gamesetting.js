@@ -1,5 +1,5 @@
 module.exports = {
-  status: 0,
+  status: 1,
   maxHp: 30,
   attributesOffset: 3,
   rarity: {
@@ -13,15 +13,16 @@ module.exports = {
   dailyPvpLimit: 10,
   daliyQuestsId: [1, 2],
   //DEV
-  // pveChannelId: "1019976184756445305",
-  // pvpChannelId: "1019976164917383178",
-  // guestpveChannelId: "1019976215983050803",
+  pveChannelId: "1019976184756445305",
+  pvpChannelId: "1019976164917383178",
+  guestpveChannelId: "1019976215983050803",
+  logsChannelId: "965474646499663954",
   //
   //Production
-  pveChannelId: "1019235623292375080",
-  pvpChannelId: "1019236029586214982",
-  guestpveChannelId: "1019236201871442031",
-  logsChannelId: "",
+  // pveChannelId: "1019235623292375080",
+  // pvpChannelId: "1019236029586214982",
+  // guestpveChannelId: "1019236201871442031",
+  // logsChannelId: "",
   //
   fightingParams: {
     counter: {

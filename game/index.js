@@ -220,3 +220,11 @@ bot.on("interactionCreate", async (interaction) => {
     });
   }
 });
+
+process.on("unhandledRejection", (error) => {
+  console.log("Unkown Interaction Found !");
+  const message = `${new Date()}: Unhandled ERROR ${error.code} - ${
+    error.message
+  }`;
+  // return bot.channels.cache.get(gamesetting.logsChannelId).send(message);
+});
