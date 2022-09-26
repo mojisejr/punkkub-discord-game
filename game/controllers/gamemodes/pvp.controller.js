@@ -39,7 +39,9 @@ const {
 
 const { logFighting } = require("../../../database/log.service");
 
-const { updateState } = require("../../../database/sqlite/sqlite.service");
+const {
+  updateState,
+} = require("../../../database/sqlite/services/sqlite.states.service");
 
 const { updateQuestProgress } = require("../../services/quest.service");
 const { updateGlobalExp } = require("../../services/global.service");
@@ -208,6 +210,7 @@ async function pvp1(playerPunk, enemyPunk) {
       if (player.hp <= 0) {
         const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
         await updatePVPLoseCount(player.discordId);
+        await levelUpDiscord(player.discordId);
         await updatePvpCount(player.discordId);
         const quest = await updateQuestProgress(player.discordId, 2);
         await updateFightingMessage(
@@ -262,10 +265,10 @@ async function pvp1(playerPunk, enemyPunk) {
       }
 
       fighting = false;
-      const winId = player.hp <= 0 ? enemy.discordId : player.discordId;
-      const lostId = player.hp <= 0 ? player.discordId : enemy.discordId;
-      const timestamp = new Date().getTime();
-      await logFighting(winId, lostId, counter, timestamp, "pvp");
+      // const winId = player.hp <= 0 ? enemy.discordId : player.discordId;
+      // const lostId = player.hp <= 0 ? player.discordId : enemy.discordId;
+      // const timestamp = new Date().getTime();
+      // await logFighting(winId, lostId, counter, timestamp, "pvp");
       await updateState(player.discordId, false);
     }
     await sleep(700);

@@ -14,7 +14,9 @@
 //   intents,
 // });
 
-// const { Collection, db } = require("./firestore");
+const { Collection } = require("./firestore");
+const sequelize = require("../database/sqlite/sqlite.database");
+const Quest = require("../database/sqlite/models/quest.model");
 // const basePath = process.cwd();
 
 // client.login(process.env.punkkubBotToken);
@@ -79,3 +81,37 @@
 //     });
 //   });
 // }
+
+//Profile
+// async function migrate() {
+//   const snapshot = await Collection.Holder.get();
+//   const holders = snapshot.docs.map((holder) => {
+//     return {
+//       id: holder.id,
+//       ...holder.data(),
+//     };
+//   });
+
+//   await sequelize.sync();
+//   const response = await Holder.bulkCreate(holders);
+//   console.log(response);
+// }
+
+async function migrate() {
+  const snapshot = await Collection.Quests.get();
+  const quests = snapshot.docs.map((quest) => {
+    return {
+      id: quest.id,
+      ...quest.data(),
+      collection: null,
+    };
+  });
+
+  console.log("quest", quests);
+
+  await sequelize.sync();
+  const response = await Quest.bulkCreate(quests);
+  console.log(response);
+}
+
+// migrate();

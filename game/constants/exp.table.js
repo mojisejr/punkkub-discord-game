@@ -2,8 +2,11 @@ const csvtojson = require("csvtojson/v2");
 const basePath = process.cwd();
 const expPath = `${basePath}/game/constants/static/exp.csv`;
 
-const { Collection } = require("../../database/firestore");
+// const { Collection } = require("../../database/firestore");
 const { getCurrentProfile } = require("../services/userInfo.service");
+const {
+  updateLevelUp,
+} = require("../../database/sqlite/services/sqlite.profile.service");
 
 async function getExpTableFromCSV() {
   const expTable = await csvtojson().fromFile(expPath);
@@ -23,9 +26,10 @@ async function checkLevelForEXP(expInput) {
 
 async function levelUp(discordId, level) {
   if (level == undefined && level == null) return;
-  await Collection.Profile.doc(discordId).update({
-    level: +level,
-  });
+  await updateLevelUp(discordId, level);
+  // await Collection.Profile.doc(discordId).update({
+  //   level: +level,
+  // });
 }
 
 async function levelUpDiscord(discordId) {

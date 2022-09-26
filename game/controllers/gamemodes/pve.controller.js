@@ -45,7 +45,9 @@ const {
 } = require("../../services/fighting.service");
 
 const { logFighting } = require("../../../database/log.service");
-const { updateState } = require("../../../database/sqlite/sqlite.service");
+const {
+  updateState,
+} = require("../../../database/sqlite/services/sqlite.states.service");
 
 const resources = require("../../constants/drop.table");
 //sleep timer
@@ -243,6 +245,7 @@ async function autoPve1(punkkub) {
         const winImage = await renderWinnerImage(playerImage, enemyImage, 1);
         await updateLoseCount(player.discordId);
         await updatePveCount(player.discordId);
+        await levelUpDiscord(player.discordId);
         const quest = await updateQuestProgress(player.discordId, 1);
         await updateFightingMessage(
           headerMsg,
@@ -301,10 +304,10 @@ async function autoPve1(punkkub) {
       }
 
       fighting = false;
-      const winId = player.hp <= 0 ? enemy.discordId : player.discordId;
-      const lostId = player.hp <= 0 ? player.discordId : enemy.discordId;
-      const timestamp = new Date().getTime();
-      await logFighting(winId, lostId, counter, timestamp, "pve");
+      // const winId = player.hp <= 0 ? enemy.discordId : player.discordId;
+      // const lostId = player.hp <= 0 ? player.discordId : enemy.discordId;
+      // const timestamp = new Date().getTime();
+      // await logFighting(winId, lostId, counter, timestamp, "pve");
       await updateState(player.discordId, false);
     }
     await sleep(700);

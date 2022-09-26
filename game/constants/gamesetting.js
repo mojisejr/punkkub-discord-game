@@ -9,7 +9,7 @@ module.exports = {
     SuperSpecialRare: "Super Spcecial Rare",
     UltraRare: "Ultra Rare",
   },
-  dailyPveLimit: 10,
+  dailyPveLimit: 100,
   dailyPvpLimit: 10,
   daliyQuestsId: [1, 2],
   //DEV

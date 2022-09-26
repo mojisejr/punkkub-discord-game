@@ -44,7 +44,9 @@ function createProfileEmbed(profile) {
       },
       {
         name: "LastFight",
-        value: `${new Date(+lastfightTime).toISOString()}`,
+        value: `${
+          lastfightTime == "" ? "N/A" : new Date(+lastfightTime).toISOString()
+        }`,
         inline: true,
       },
       {
@@ -59,7 +61,7 @@ function createProfileEmbed(profile) {
       },
       {
         name: "Win Rate (PVE)",
-        value: `${winrate} %`,
+        value: `${winrate == "NaN" ? "N/A" : winrate} %`,
         inline: true,
       },
       {

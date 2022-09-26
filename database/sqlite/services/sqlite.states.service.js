@@ -1,5 +1,5 @@
-const sequelize = require("./sqlite.database");
-const State = require("./state.model");
+const sequelize = require("../sqlite.database");
+const State = require("../models/state.model");
 
 async function createNewState(discordId, state) {
   const newState = await State.create({
@@ -45,6 +45,24 @@ async function updateState(discordId, fighting) {
   return updated[0];
 }
 
+async function getAllStates() {
+  const states = await State.findAll();
+  return states;
+}
+
+async function resetFightingState() {
+  const result = await State.update(
+    {
+      fighting: false,
+    },
+    {
+      where: {
+        fighting: true,
+      },
+    }
+  );
+}
+
 async function canPlay(discordId) {
   const fighting = await State.findOne({ where: { discordId: discordId } });
   if (fighting == null) {
@@ -62,6 +80,7 @@ async function canPlay(discordId) {
 
 module.exports = {
   createNewState,
+  getAllStates,
   updateState,
   canPlay,
 };

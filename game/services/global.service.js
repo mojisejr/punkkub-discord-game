@@ -1,11 +1,18 @@
 const { Collection, SubCollection } = require("../../database/firestore");
 const { getCurrentProfile } = require("./userInfo.service");
 
+const {
+  getCommunityData,
+  updateCommunityEXP,
+} = require("../../database/sqlite/services/sqlite.community.service");
+
 async function getCurrentGlobalProfile() {
-  const snapshot = await Collection.Community.doc(
-    SubCollection.Community.Profile
-  ).get();
-  return snapshot.data();
+  const data = await getCommunityData();
+  return data;
+  // const snapshot = await Collection.Community.doc(
+  //   SubCollection.Community.Profile
+  // ).get();
+  // return snapshot.data();
 }
 
 async function updateGlobalExp(expInput, discordId) {
@@ -13,9 +20,11 @@ async function updateGlobalExp(expInput, discordId) {
   if (!isValid) return 0;
   const total = expInput * 1.5;
   const { exp } = await getCurrentGlobalProfile();
-  await Collection.Community.doc(SubCollection.Community.Profile).update({
-    exp: exp + total,
-  });
+  const newExp = exp + total;
+  await updateCommunityEXP(newExp);
+  // await Collection.Community.doc(SubCollection.Community.Profile).update({
+  //   exp: exp + total,
+  // });
   return total;
 }
 

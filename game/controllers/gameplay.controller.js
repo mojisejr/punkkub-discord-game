@@ -6,7 +6,7 @@ const { reply } = require("./message.controller");
 const {
   canPlay,
   updateState,
-} = require("../../database/sqlite/sqlite.service");
+} = require("../../database/sqlite/services/sqlite.states.service");
 const { getPunkByDiscordId } = require("../../database/verify.service");
 const { guestPve } = require("./gamemodes/gpve.controller");
 

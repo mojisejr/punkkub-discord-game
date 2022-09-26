@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
-const sequelize = require("./sqlite.database");
+const sequelize = require("../sqlite.database");
 
 class GameState extends Model {}
 

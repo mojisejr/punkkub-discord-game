@@ -4,7 +4,7 @@ const {
   getGameProfile,
   addNewProfile,
 } = require("../services/userInfo.service");
-const { addNewInventory } = require("../services/inventory.service");
+// const { addNewInventory } = require("../services/inventory.service");
 const { createBeginStory } = require("../embeds/story.embed");
 const {
   addActiveQuestOf,
@@ -24,7 +24,7 @@ async function beginProcessHandler(interaction, profile, punkkub) {
     console.log(`add new profile data for ${interaction.user.id}`);
 
     await addNewProfile(interaction.user.id);
-    await addNewInventory(interaction.user.id);
+    // await addNewInventory(interaction.user.id);
     await interaction.editReply({ embeds: [story], ephemeral: true });
     // await interaction.reply("🤗 เรียบร้อย !");
     return;
@@ -97,7 +97,7 @@ async function getQuestHandler(hasPunk, interaction) {
   if (hasPunk && selected != null) {
     const active = await getActiveQuestOf(interaction.user.id, selected);
     const doneDaliyQuest = await checkDaliyQuest(interaction.user.id, selected);
-    if (active.data != null && active.data.progress >= 0) {
+    if (active != null && active.current >= 0) {
       await interaction.editReply({
         content: `🤔 รับเควสนี้ไปแล้วนี่ !!`,
         ephemeral: true,

@@ -1,16 +1,20 @@
 const { Collection } = require("../../database/firestore");
 const { bot } = require("../../discord.bot");
 const { numberToEmoji } = require("../../helper/number.emoji");
-const { renderLeaderBoard } = require("../renderer/renderer");
+// const { renderLeaderBoard } = require("../renderer/renderer");
+const {
+  getAllProfile,
+} = require("../../database/sqlite/services/sqlite.profile.service");
 
 async function getAllProfileData(type = "desc") {
-  const snapshot = await Collection.Profile.get();
-  const users = snapshot.docs.map((user) => {
-    return {
-      discordId: user.id,
-      ...user.data(),
-    };
-  });
+  // const snapshot = await Collection.Profile.get();
+  // const users = snapshot.docs.map((user) => {
+  //   return {
+  //     discordId: user.id,
+  //     ...user.data(),
+  //   };
+  // });
+  const users = await getAllProfile();
 
   sortData(users, type);
   if (users.length <= 0) {

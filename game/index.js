@@ -24,7 +24,9 @@ const sequelize = require("../database/sqlite/sqlite.database");
 const { getAllProfileData } = require("./services/leaderboard.service");
 const { log } = require("../database/csv.log.service");
 const gamesetting = require("./constants/gamesetting");
-const { updateState } = require("../database/sqlite/sqlite.service");
+const {
+  updateState,
+} = require("../database/sqlite/services/sqlite.states.service");
 
 sequelize.sync().then(() => console.log("state is now ready"));
 

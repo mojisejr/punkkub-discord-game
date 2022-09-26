@@ -154,8 +154,8 @@ async function renderFightingImage(
   player1Image,
   player2Image
 ) {
-  console.log(player1Image);
-  console.log(player2Image);
+  // console.log(player1Image);
+  // console.log(player2Image);
   const canvas = createCanvas(width, height);
 
   const frame = await loadImage(framePath);
