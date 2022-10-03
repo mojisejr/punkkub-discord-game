@@ -311,7 +311,7 @@ async function autoPve2(punkkub) {
       // await logFighting(winId, lostId, counter, timestamp, "pve");
       await updateState(player.discordId, false);
     }
-    await sleep(700);
+    await sleep(400);
   }
 }
 

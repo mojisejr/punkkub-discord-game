@@ -2,6 +2,10 @@ const { Collection } = require("../../database/firestore");
 const { calculateWinsRate } = require("../utils/calculatewinrate");
 const { createProfileEmbed } = require("../embeds/profile.embed");
 const { getAllMappedResourceFromInventory } = require("./inventory.service");
+const {
+  canPlay,
+  updateState,
+} = require("../../database/sqlite/services/sqlite.states.service");
 
 ///SQLITE
 const {
@@ -92,6 +96,8 @@ async function getGameProfile(interaction) {
   const embed = createProfileEmbed(profile);
   return embed;
 }
+
+async function playable(interaction) {}
 
 module.exports = {
   addNewProfile,

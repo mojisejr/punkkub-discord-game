@@ -279,7 +279,7 @@ async function guestPve(selectedSide, discordId) {
 
       fighting = false;
     }
-    await sleep(700);
+    await sleep(400);
   }
 }
 

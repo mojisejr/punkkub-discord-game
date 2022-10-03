@@ -254,7 +254,9 @@ async function pvp1(playerPunk, enemyPunk) {
         );
         await updateFightingMessage(
           gameMsg,
-          `***${player.tokenId} ชนะ !! <@${player.discordId}> ..~ ***
+          `***${player.tokenId} ชนะ !! <@${player.discordId}>, <@${
+            enemy.discordId
+          }> ..~ ***
           🍆 ได้รับค่าประสบการณ์ [EXP] : [${exp}]
           ⚙️ คอมมูได้รับประสมการณ์ [GEXP] : [${
             gExp <= 0 ? "ต้อง level 5 ขึ้นไป" : gExp
@@ -271,7 +273,7 @@ async function pvp1(playerPunk, enemyPunk) {
       // await logFighting(winId, lostId, counter, timestamp, "pvp");
       await updateState(player.discordId, false);
     }
-    await sleep(700);
+    await sleep(400);
   }
 }
 

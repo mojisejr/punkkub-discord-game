@@ -158,14 +158,12 @@ bot.on("interactionCreate", async (interaction) => {
           }
           if (hasPunk) {
             //game play controller
-            if (interaction.deferred) {
-              await playGame(
-                COMMANDS.PVP,
-                punkkub,
-                interaction,
-                interaction.options.data[0].value
-              );
-            }
+            await playGame(
+              COMMANDS.PVP,
+              punkkub,
+              interaction,
+              interaction.options.data[0].value
+            );
             await interaction.deleteReply();
           } else {
             await interaction.editReply({
@@ -201,7 +199,6 @@ bot.on("interactionCreate", async (interaction) => {
     // if (interaction.deferReply) return;
     //update fighting state to false always if fighting gone
     await updateState(interaction.user.id, false);
-    console.log(e);
     await log(
       `${interaction.user.id} ${e.message} command: ${
         interaction.commandName
@@ -228,5 +225,6 @@ process.on("unhandledRejection", (error) => {
   const message = `${new Date()}: Unhandled ERROR ${error.code} - ${
     error.message
   }`;
+  console.log(message);
   // return bot.channels.cache.get(gamesetting.logsChannelId).send(message);
 });

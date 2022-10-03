@@ -21,7 +21,7 @@ async function hasData(discordId) {
 }
 
 async function updateState(discordId, fighting) {
-  const found = await hasData(discordId);
+  const found = await State.findOne({ where: { discordId: discordId } });
   if (!found) {
     console.log("create new state");
     await createNewState(discordId);

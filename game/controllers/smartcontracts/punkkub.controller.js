@@ -132,7 +132,7 @@ async function getDataFromTokenURI(tokenId) {
       data: response.data,
     };
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return { result: false, data: null };
   }
 }
@@ -153,7 +153,7 @@ async function hasPunkInWallet(wallet) {
   return true;
 }
 
-hasPunkInWallet("0x003e324fc667fcc2d933480d55c5e3c26b75459d");
+// hasPunkInWallet("0x003e324fc667fcc2d933480d55c5e3c26b75459d");
 
 module.exports = {
   getRandomPunkFromDiscord,

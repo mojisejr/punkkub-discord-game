@@ -54,21 +54,22 @@ async function playGame(
       if (enemyPunk == null) {
         console.log(enemyPunk);
         await updateState(punkkub.discordId, false);
-        await interaction.reply({
+        await interaction.editReply({
           content: `❌ : หา punkkub ใน wallet เพื่อนอีกคนไม่เจอ แฮะ อาจจะไม่มี, ลองคนอื่นมะ`,
           ephemeral: true,
         });
-
-        return;
+        break;
+        // return;
       }
 
       if (punkkub.discordId == enemyPunk.discordId) {
         await updateState(punkkub.discordId, false);
-        interaction.reply({
+        interaction.editReply({
           content: `🤣 คนอะไรจะมาฆ่า ตัวเองซะแล้ววว  !!, เปลี่ยนคนแล้วลองใหม่ !🤣`,
           ephemeral: true,
         });
-        return;
+        break;
+        // return;
       }
 
       console.log(
@@ -87,7 +88,7 @@ async function playGame(
     default: {
       await updateState(punkkub.discordId, false);
       console.log("Invalid Command or You has no punk!");
-      reply({
+      editReply({
         content: `🧨 ERROR: กดคำสั่งผิดหวือเปล่า ?. ถ้าไม่ผิดถาม ! =>  non | KPUNK !`,
         ephemeral: true,
       });

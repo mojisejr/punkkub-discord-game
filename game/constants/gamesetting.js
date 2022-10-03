@@ -10,7 +10,7 @@ module.exports = {
     UltraRare: "Ultra Rare",
   },
   dailyPveLimit: 100,
-  dailyPvpLimit: 10,
+  dailyPvpLimit: 100,
   daliyQuestsId: [1, 2],
   //DEV
   pveChannelId: "1019976184756445305",
