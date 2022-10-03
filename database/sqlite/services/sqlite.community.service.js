@@ -1,7 +1,8 @@
 const Community = require("../models/community.model");
 
 async function getCommunityData() {
-  const found = await Community.findOne({ where: { name: "progress" } });
+  const found = await Community.findOne({ where: { name: "profile" } });
+  console.log(found);
   if (found != null) {
     return communityDataTranform(found);
   } else {

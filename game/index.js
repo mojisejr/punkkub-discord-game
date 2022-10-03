@@ -30,11 +30,14 @@ const {
 
 sequelize.sync().then(() => console.log("state is now ready"));
 
+let currentPlayer;
+
 bot.on("interactionCreate", async (interaction) => {
   //checking game state
   const status = gamesetting.status;
   const announcement = createAnnouncement();
   const interactionName = interaction.commandName;
+  currentPlayer = interaction.user.id;
   if (
     status == 0 &&
     interactionName != "gupunk" &&
@@ -220,11 +223,13 @@ bot.on("interactionCreate", async (interaction) => {
   }
 });
 
-process.on("unhandledRejection", (error) => {
+process.on("unhandledRejection", async (error) => {
   console.log("Unkown Interaction Found !");
   const message = `${new Date()}: Unhandled ERROR ${error.code} - ${
     error.message
   }`;
   console.log(message);
+  await updateState(currentPlayer, false);
+  return;
   // return bot.channels.cache.get(gamesetting.logsChannelId).send(message);
 });

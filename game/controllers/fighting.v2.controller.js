@@ -1,3 +1,4 @@
+const gamesetting = require("../constants/gamesetting");
 function updateFightingV2(
   player,
   enemy,
@@ -47,8 +48,14 @@ function leftSideItemProcessingV2(
   selectedAttr2
 ) {
   //player draw hp item:
-  player.hp += item.itemEffect.player.hp;
-  enemy.hp += item.itemEffect.enemy.hp;
+  player.hp =
+    player.hp <= gamesetting.maxHp
+      ? (player.hp += item.itemEffect.player.hp)
+      : gamesetting.maxHp;
+  enemy.hp =
+    enemy.hp <= gamesetting.maxHp
+      ? (enemy.hp += item.itemEffect.enemy.hp)
+      : gamesetting.maxHp;
 
   item.itemEffect.player[selectedAttr1.trait_type] > 0
     ? (enemy.hp -= item.itemEffect.player[selectedAttr1.trait_type])
@@ -66,48 +73,20 @@ function rightSideItemProcessingV2(
   selectedAttr2
 ) {
   //player is enemy
-  player.hp += item.itemEffect.enemy.hp;
-  enemy.hp += item.itemEffect.player.hp;
+  player.hp =
+    player.hp <= gamesetting.maxHp
+      ? (player.hp += item.itemEffect.enemy.hp)
+      : gamesetting.maxHp;
+  enemy.hp =
+    enemy.hp <= gamesetting.maxHp
+      ? (enemy.hp += item.itemEffect.player.hp)
+      : gamesetting.maxHp;
   item.itemEffect.player[selectedAttr1.trait_type] > 0
     ? (player.hp -= item.itemEffect.player[selectedAttr1.trait_type])
     : player;
   item.itemEffect.enemy[selectedAttr2.trait_type] > 0
     ? (enemy.hp -= item.itemEffect.enemy[selectedAttr2.trait_type])
     : enemy;
-}
-
-function itemProcessingV2(
-  player,
-  enemy,
-  item,
-  flag,
-  selectedAttr1,
-  selectedAttr2
-) {
-  //if HP power up !
-  player.hp += item.itemEffect.player.hp;
-  enemy.hp += item.itemEffect.enemy.hp;
-  //get effect for player for status power up
-  if (flag == 0) {
-    console.log("player item atk");
-    item.itemEffect.player[selectedAttr1.trait_type] > 0
-      ? (enemy.hp -= item.itemEffect.player[selectedAttr1.trait_type])
-      : enemy;
-    item.itemEffect.enemy[selectedAttr2.trait_type] > 0
-      ? (player.hp -= item.itemEffect.enemy[selectedAttr2.trait_type])
-      : player;
-  }
-
-  //enemy become player
-  if (flag == 1) {
-    console.log("enemy item atk");
-    item.itemEffect.enemy[selectedAttr2.trait_type] > 0
-      ? (player.hp -= item.itemEffect.player[selectedAttr1.trait_type])
-      : player;
-    item.itemEffect.player[selectedAttr1.trait_type] > 0
-      ? (enemy.hp -= item.itemEffect.enemy[selectedAttr2.trait_type])
-      : enemy;
-  }
 }
 
 function canFight(player1, player2) {
