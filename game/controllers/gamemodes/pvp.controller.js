@@ -227,7 +227,7 @@ async function pvp1(playerPunk, enemyPunk) {
         );
         await updateFightingMessage(
           gameMsg,
-          `***${enemy.tokenId} ชนะ !! 🤖 beeep beep ..~*** 
+          `<@${player.discordId}> แพ้ <@${enemy.discordId}>  
           ${quest.msg}`,
           COMMANDS.PVP
         );
@@ -254,9 +254,7 @@ async function pvp1(playerPunk, enemyPunk) {
         );
         await updateFightingMessage(
           gameMsg,
-          `***${player.tokenId} ชนะ !! <@${player.discordId}>, <@${
-            enemy.discordId
-          }> ..~ ***
+          `***<@${player.discordId}> ชนะ <@${enemy.discordId}> ..~ ***
           🍆 ได้รับค่าประสบการณ์ [EXP] : [${exp}]
           ⚙️ คอมมูได้รับประสมการณ์ [GEXP] : [${
             gExp <= 0 ? "ต้อง level 5 ขึ้นไป" : gExp
